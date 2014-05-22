@@ -1,0 +1,43 @@
+---
+- name: Install common tools and systems
+  apt: pkg={{ item }} state=present
+  with_items:
+    - vim
+    - emacs23-nox
+    - htop
+    - rsyslog 
+    - oidentd
+    - postfix
+    - git
+    - subversion
+    - python-software-properties
+
+- name: Config Vim
+  template: src=vimrc.j2 dest=/etc/vim/vim.local
+
+- name: Set Perms for Vim Config
+  file: path=/etc/vim/vim.local owner=root group=root mode=644
+
+- name: Config Oidentd
+  template: src=oidentd.conf.j2 dest=/etc/oidentd.conf
+
+- name: Set Perms for Oidentd.conf 
+  file: path=/etc/oidentd.conf owner=root group=root mode=644
+
+- name: Config Rsyslog
+  template: src=rsyslog.j2 dest=/etc/rsyslog.conf
+
+- name: Set Perms for Rsyslog Config
+  file: path=/etc/rsyslog.conf owner=root group=root mode=644
+
+- name: Config Postfix
+  template: src=main.j2 dest=/etc/postfix/main.cf
+
+- name: Set Perms for Postfix Config
+  file: path=/etc/postfix/main.cf owner=root group=root mode=644
+
+- name: Config Sysctl
+  template: src=sysctl.j2 dest=/etc/sysctl.conf
+
+- name: Set Perms for Sysctl Config
+  file: path=/etc/sysctl.conf owner=root group=root mode=644

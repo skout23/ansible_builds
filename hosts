@@ -1,0 +1,15 @@
+[ec2useast1]
+ecshell ansible_ssh_host=75.101.147.166
+
+[ec2uswest1]
+
+[ec2uswest2]
+
+[ec2network:children]
+ec2uswest1
+ec2useast1
+ec2uswest2
+
+[gambitsnet:children]
+ec2network
+

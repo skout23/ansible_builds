@@ -1,0 +1,42 @@
+---
+- name: Create sysadmins group
+  group: name=sysadmins gid=1050 state=present
+
+- name: Create developers group
+  group: name=developers gid=1060 state=present
+
+- name: Create automation group
+  group: name=automation gid=1070 state=present
+
+- name: add sysadmins to sudoers
+  lineinfile: dest=/etc/sudoers backup=yes state=present regexp='^%sysadmins' insertafter="^%admin" line='%sysadmins ALL=(ALL) NOPASSWD:ALL'
+
+- name: add developers to sudoers
+  lineinfile: dest=/etc/sudoers backup=yes state=present regexp='^%developers' insertafter="^%admin" line='%developers ALL=(ALL) ALL'
+
+- name: Add skout user
+  user: name=skout  shell=/bin/bash state=present group=sysadmins comment="Scott" uid=1022
+
+- name: Add authorized key for skout
+  authorized_key: user=skout key="{{ lookup('file', 'skout.pub') }}"
+
+- name: Remove games user
+  user: name=games state=absent remove=yes
+
+- name: Remove news user
+  user: name=news state=absent remove=yes
+
+- name: Remove uucp user
+  user: name=uucp state=absent remove=yes
+
+- name: Remove list user
+  user: name=list state=absent remove=yes
+
+- name: Remove irc user
+  user: name=irc state=absent remove=yes
+
+- name: Remove gnats user
+  user: name=gnats state=absent remove=yes
+
+- name: Remove lp user
+  user: name=lp state=absent remove=yes

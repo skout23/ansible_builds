@@ -1,0 +1,8 @@
+---
+- name: System Setup
+  hosts: ecshell
+  user: skout
+  sudo: yes
+
+  roles:
+    - ecshell

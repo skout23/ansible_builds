@@ -1,0 +1,86 @@
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+
+# Debian specific:  Specifying a file name will cause the first
+# line of that file to be used as the name.  The Debian default
+# is /etc/mailname.
+#myorigin = /etc/mailname
+mail_name = shell.gambits.org
+
+smtpd_banner = $myhostname ESMTP $mail_name
+biff = no
+
+# appending .domain is the MUA's job.
+append_at_myorigin = yes
+append_dot_mydomain = yes
+mydomain = gambits.org
+myorigin = /etc/mailname
+masquerade_domains = $mydomain
+masquerade_classes = envelope_sender, envelope_recipient, header_sender, header_recipient
+
+
+# TLS parameters
+#
+# where we get our entropy
+tls_random_source = dev:/dev/urandom
+# now the important bit – our client TLS details for the upstream
+smtp_use_tls = yes
+#
+# note that the cert below was generated locally using openssl thusly:
+# “openssl req -new -x509 -nodes -out smtp-client.pem -keyout smtp-client.pem -days 10000″
+#
+smtp_tls_cert_file = /etc/postfix/tls/smtp-client.pem
+# use the cert file as the key file as well
+smtp_tls_key_file = $smtp_tls_cert_file
+# now list the certs of the servers we trust (actually, we only need the Thawte cert used by our upstream).
+#smtp_tls_CAfile = /etc/postfix/tls/cacert.pem
+# where is the cache
+# increase the logging
+smtp_tls_loglevel = 0
+# and set the per site details (force TLS with specific hosts)
+#smtp_tls_per_site = hash:/etc/postfix/tls/tls_sites
+#
+# end TLS
+
+
+# SASL Client
+# SASL details
+#
+# no for the server
+smtpd_sasl_auth_enable = no
+# but yes when we act as a client
+smtp_sasl_auth_enable = yes
+# where we store the hashed UID and password
+smtp_sasl_password_maps = hash:/etc/postfix/sasl/saslpwd
+# security options set to disallow anon auth (but allow plaintext within the TLS session)
+smtp_sasl_security_options = noanonymous
+# our upstream relay is here
+relayhost = email-smtp.us-east-1.amazonaws.com
+#
+# end SASL
+
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+readme_directory = no
+
+# TLS parameters
+smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+smtpd_use_tls=yes
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+# See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
+# information on enabling SSL in the smtp client.
+
+myhostname = shu.smtp.epoch.com
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+mydestination = localhost
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = loopback-only
+inet_protocols = ipv4
