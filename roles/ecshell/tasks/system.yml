@@ -11,6 +11,9 @@
     - git
     - subversion
     - python-software-properties
+    - tintin++
+    - weechat
+   
 
 - name: Config Vim
   template: src=vimrc.j2 dest=/etc/vim/vim.local
