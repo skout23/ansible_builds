@@ -1,0 +1,8 @@
+---
+- name: Adding NodeJS apt repo
+  apt_repository: repo='ppa:chris-lea/node.js'
+
+- name: Install apache webserver and package based apachelibs
+  apt: pkg={{ item }} state=present
+  with_items:
+    - nodejs
